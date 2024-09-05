@@ -29,6 +29,7 @@ jobs:
           haxelib install lime 7.9.0 --quiet
           haxelib install openfl --quiet
           haxelib install flixel 4.9.0 --quiet
+          haxelib git jsonpatch https://github.com/EliteMasterEric/jsonpatch --quiet
           haxelib install hxcpp 4.3.2 --quiet
           haxelib install flixel-tools --quiet
           haxelib install flixel-ui 2.5.0 --quiet
@@ -37,11 +38,11 @@ jobs:
           haxelib install hxCodec --quiet
           haxelib install newgrounds 1.3.0 --quiet
           haxelib git faxe https://github.com/uhrobots/faxe --quiet
-          haxelib git polymod https://github.com/larsiusprime/polymod.git --quiet
+          haxelib git polymod https://github.com/larsiusprime/polymod --quiet
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc --quiet
           haxelib git extension-webm https://github.com/luckydog7/extension-webm --quiet
-          haxelib git linc_luajit https://github.com/MasterEric/linc_luajit.git --quiet
-          haxelib git hxvm-luajit https://github.com/nebulazorua/hxvm-luajit.git --quiet
+          haxelib git linc_luajit https://github.com/MasterEric/linc_luajit --quiet
+          haxelib git hxvm-luajit https://github.com/nebulazorua/hxvm-luajit --quiet
           haxelib install actuate 
           haxelib list
           
