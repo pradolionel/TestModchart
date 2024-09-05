@@ -37,9 +37,6 @@ jobs:
           haxelib git faxe https://github.com/uhrobots/faxe --quiet
           haxelib install polymod 1.7.0 --quiet
           haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc --quiet
-          haxelib git linc_luajit https://github.com/MasterEric/linc_luajit --quiet
-          haxelib install actuate
-          haxelib list
       - name: android functions
         run: |
           haxelib run lime config ANDROID_SDK $ANDROID_HOME
