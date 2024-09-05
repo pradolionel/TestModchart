@@ -1,7 +1,7 @@
-name: superlinter
+name: superlinterandroid
 on: workflow_dispatch
 jobs:
-  superlinter:
+  superlinterandroid:
     runs-on: ubuntu-latest
     #strategy:
       #fail-fast: false
