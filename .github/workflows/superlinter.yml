@@ -1,4 +1,4 @@
-name: superlinterandroid
+name: superlinter
 on:
   push:
     branches: [ main ]
@@ -6,15 +6,15 @@ on:
     branches: [ main ]
   workflow_dispatch:
 jobs:
-  superlinterandroid:
+  superlinter:
     runs-on: ubuntu-latest
     #strategy:
       #fail-fast: false
       #matrix:
         #flag: [ONLY_ARMV7, ONLY_ARM64, UNIVERSAL]
     steps:
-      - uses: actions/checkout@main
-      - uses: actions/setup-java@main
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
@@ -25,7 +25,7 @@ jobs:
           local-cache: true
       - uses: krdlab/setup-haxe@v1
         with:
-          haxe-version: 4.1.5
+          haxe-version: 4.1.0
       - name: install all libraries
         run: |
           mkdir -p "%HAXELIB_ROOT%"
@@ -53,8 +53,8 @@ jobs:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
       - name: run game xd
         run: haxelib run lime build android -D
-      - uses: actions/upload-artifact@main
+      - uses: actions/upload-artifact@v4
         with:
-          name: androidBuild
+          name: ProjectFNF
           path: export/release/android/bin/app/build/outputs/apk/debug
           if-no-files-found: error
