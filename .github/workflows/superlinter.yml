@@ -1,4 +1,4 @@
-name: superlinter
+#name: superlinter
 on:
   #push:
     #branches: [ main ]
