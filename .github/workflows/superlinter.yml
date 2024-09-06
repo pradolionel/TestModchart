@@ -1,10 +1,60 @@
+name: superlinter
+on:
+  #push:
+    #branches: [ main ]
+  #pull_request:
+    #branches: [ main ]
+  workflow_dispatch:
 jobs:
   build:
-    runs-on: [ubuntu-latest, macos-latest]
+    runs-on: ubuntu-latest
+    #strategy:
+      #fail-fast: false
+      #matrix:
+        #flag: [ONLY_ARMV7, ONLY_ARM64, UNIVERSAL]
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+          local-cache: true
       - uses: krdlab/setup-haxe@v1
         with:
-          haxe-version: 4.0.5
-      - run: |
-          haxe -version
-          haxelib install hxnodejs
+          haxe-version: 4.1.0
+      - name: install all libraries
+        run: |
+          mkdir -p "%HAXELIB_ROOT%"
+          haxelib setup "%HAXELIB_ROOT%"
+          haxelib install lime 7.9.0
+          haxelib install openfl 9.1.0
+          haxelib install flixel 4.9.0
+          haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp
+          haxelib install flixel-tools 1.5.1
+          haxelib install flixel-ui 2.5.0
+          haxelib install flixel-addons 2.9.0
+          haxelib install newgrounds 1.3.0
+          haxelib install hscript 2.5.0
+          haxelib git faxe https://github.com/ashea-code/faxe
+          haxelib install polymod 1.7.0
+          haxelib install discord_rpc 1.0.0
+          haxelib install hxcpp-debug-server 1.2.4
+      - name: android functions
+        run: |
+          haxelib run lime config ANDROID_SDK $ANDROID_HOME
+          haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_HOME
+          haxelib run lime config JAVA_HOME $JAVA_HOME
+          haxelib run lime config ANDROID_SETUP true
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+      - name: run game xd
+        run: haxelib run lime build android -D
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ProjectFNF
+          path: export/release/android/bin/app/build/outputs/apk/debug
+          if-no-files-found: error
