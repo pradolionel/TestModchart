@@ -6,7 +6,7 @@ on:
     branches: [ main ]
   workflow_dispatch:
 jobs:
-  superlinter:
+  build:
     runs-on: ubuntu-latest
     #strategy:
       #fail-fast: false
