@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     #strategy:
       #fail-fast: false
       #matrix:
@@ -25,11 +25,9 @@ jobs:
           local-cache: true
       - uses: krdlab/setup-haxe@v1
         with:
-          haxe-version: 4.1.0
+          haxe-version: 4.3.4
       - name: install all libraries
         run: |
-          mkdir -p "%HAXELIB_ROOT%"
-          haxelib setup "%HAXELIB_ROOT%"
           haxelib install lime 7.9.0
           haxelib install openfl 9.1.0
           haxelib install flixel 4.9.0
@@ -52,7 +50,7 @@ jobs:
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
       - name: run game xd
-        run: haxelib run lime build android -D
+        run: haxelib run lime build android
       - uses: actions/upload-artifact@v4
         with:
           name: ProjectFNF
