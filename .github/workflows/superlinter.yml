@@ -29,7 +29,7 @@ jobs:
       - name: install all libraries
         run: |
           haxelib install lime 7.9.0
-          haxelib install openfl
+          haxelib install openfl 9.2.0
           haxelib install flixel 4.9.0
           haxelib git hxcpp https://github.com/mcagabe19-stuff/hxcpp
           haxelib install flixel-tools 1.5.1
