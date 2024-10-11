@@ -1,10 +1,53 @@
+on: [workflow_dispatch]
 jobs:
   build:
-    runs-on: [ubuntu-latest, macos-latest]
+    runs-on: ubuntu-latest
     steps:
-      - uses: krdlab/setup-haxe@v1
+      - name: checkout
+        uses: actions/checkout@main
+      - name: java
+        uses: actions/setup-java@main
         with:
-          haxe-version: 4.0.5
-      - run: |
-          haxe -version
-          haxelib install hxnodejs
+          java-version: '11'
+          distribution: 'temurin'
+      - name: ndk
+        uses: nttld/setup-ndk@main
+        id: setup-ndk
+        with:
+          ndk-version: r21e
+      - name: haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.4
+      - name: libs
+        run: |
+          haxelib install lime 7.9.0
+          haxelib install openfl
+          haxelib install flixel 4.9.0
+          haxelib install flixel-tools
+          haxelib install flixel-ui 2.5.0
+          haxelib install flixel-addons 2.9.0
+          haxelib install newgrounds 1.3.0
+          haxelib install hscript
+          haxelib git faxe https://github.com/ashea-code/faxe
+          haxelib git hxcpp https://github.com/HaxeFoundation/hxcpp
+          haxelib git extension-androidtools https://github.com/idktrolled/extension-androidtools
+          haxelib git linc_luajit https://github.com/superpowers04/linc_luajit
+          haxelib git polymod https://github.com/swordcube/scriptless-polymod
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc
+          haxelib install hxcpp-debug-server
+      - name: android
+        run: |
+          haxelib run lime config ANDROID_SDK $ANDROID_HOME
+          haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_HOME
+          haxelib run lime config JAVA_HOME $JAVA_HOME
+          haxelib run lime config ANDROID_SETUP true
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+      - name: compile
+        run: haxelib run lime build android
+      - name: upload
+        uses: actions/upload-artifact@main
+        with:
+          name: test
+          path: export/release/android/bin/app/build/outputs/apk/debug
