@@ -1,22 +1,8 @@
-package;
+package mobile.backend;
 
-#if sys
-import sys.*;
-import sys.io.*;
-#end
 import lime.system.System as LimeSystem;
 import haxe.io.Path;
 import haxe.Exception;
-
-using StringTools;
-
-enum StorageType
-{
-	EXTERNAL_DATA;
-	EXTERNAL_OBB;
-	EXTERNAL_MEDIA;
-	EXTERNAL;
-}
 
 /**
  * A storage class for mobile.
@@ -28,21 +14,15 @@ class StorageUtil
 	// root directory, used for handling the saved storage type and path
 	public static final rootDir:String = LimeSystem.applicationStorageDirectory;
 
-	public static function getStorageDirectory(type:StorageType = EXTERNAL_DATA):String
+	public static function getStorageDirectory(?force:Bool = false):String
 	{
 		var daPath:String = '';
 		#if android
-	        switch (type)
-		{
-			case EXTERNAL_DATA:
-				daPath = AndroidContext.getExternalFilesDir();
-			case EXTERNAL_OBB:
-				daPath = AndroidContext.getObbDir();
-			case EXTERNAL_MEDIA:
-				daPath = AndroidEnvironment.getExternalStorageDirectory() + '/Android/media/' + lime.app.Application.current.meta.get('packageName');
-			case EXTERNAL:
-				daPath = AndroidEnvironment.getExternalStorageDirectory() + '/.' + lime.app.Application.current.meta.get('file');
-		}
+		if (!FileSystem.exists(rootDir + 'storagetype.txt'))
+			File.saveContent(rootDir + 'storagetype.txt', Options.Option.storageType);
+		var curStorageType:String = File.getContent(rootDir + 'storagetype.txt');
+		daPath = force ? StorageType.fromStrForce(curStorageType) : StorageType.fromStr(curStorageType);
+		daPath = Path.addTrailingSlash(daPath);
 		#elseif ios
 		daPath = LimeSystem.documentsDirectory;
 		#end
@@ -124,10 +104,10 @@ class StorageUtil
 		}
 		else
 		{
-			CoolUtil.showPopUp('check files');
+			CoolUtil.showPopUp('Please create directory to\n' + StorageUtil.getStorageDirectory(true) + '\nPress OK to close the game', 'Error!');
 			LimeSystem.exit(1);
 		}
-  }
+	}
 
 	public static function checkExternalPaths(?splitStorage = false):Array<String>
 	{
@@ -151,3 +131,52 @@ class StorageUtil
 	#end
 	#end
 }
+
+#if android
+@:runtimeValue
+enum abstract StorageType(String) from String to String
+{
+	final forcedPath = '/storage/emulated/0/';
+	final packageNameLocal = 'com.shadowmario.psychengine';
+	final fileLocal = 'PsychEngine';
+
+	var EXTERNAL_DATA = "EXTERNAL_DATA";
+	var EXTERNAL_OBB = "EXTERNAL_OBB";
+	var EXTERNAL_MEDIA = "EXTERNAL_MEDIA";
+	var EXTERNAL = "EXTERNAL";
+
+	public static function fromStr(str:String):StorageType
+	{
+		final EXTERNAL_DATA = AndroidContext.getExternalFilesDir();
+		final EXTERNAL_OBB = AndroidContext.getObbDir();
+		final EXTERNAL_MEDIA = AndroidEnvironment.getExternalStorageDirectory() + '/Android/media/' + lime.app.Application.current.meta.get('packageName');
+		final EXTERNAL = AndroidEnvironment.getExternalStorageDirectory() + '/.' + lime.app.Application.current.meta.get('file');
+
+		return switch (str)
+		{
+			case "EXTERNAL_DATA": EXTERNAL_DATA;
+			case "EXTERNAL_OBB": EXTERNAL_OBB;
+			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
+			case "EXTERNAL": EXTERNAL;
+			default: StorageUtil.getExternalDirectory(str) + '.' + fileLocal;
+		}
+	}
+
+	public static function fromStrForce(str:String):StorageType
+	{
+		final EXTERNAL_DATA = forcedPath + 'Android/data/' + packageNameLocal + '/files';
+		final EXTERNAL_OBB = forcedPath + 'Android/obb/' + packageNameLocal;
+		final EXTERNAL_MEDIA = forcedPath + 'Android/media/' + packageNameLocal;
+		final EXTERNAL = forcedPath + '.' + fileLocal;
+
+		return switch (str)
+		{
+			case "EXTERNAL_DATA": EXTERNAL_DATA;
+			case "EXTERNAL_OBB": EXTERNAL_OBB;
+			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
+			case "EXTERNAL": EXTERNAL;
+			default: StorageUtil.getExternalDirectory(str) + '.' + fileLocal;
+		}
+	}
+}
+#end
