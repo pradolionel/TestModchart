@@ -124,7 +124,7 @@ class StorageUtil
 		}
 		else
 		{
-			CoolUtil.showPopUp('Please create directory to\n' + StorageUtil.getStorageDirectory(true) + '\nPress OK to close the game', 'Error!');
+			CoolUtil.showPopUp('check files');
 			LimeSystem.exit(1);
 		}
   }
