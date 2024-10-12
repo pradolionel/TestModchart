@@ -41,6 +41,9 @@ class OptionCatagory
 
 class Option
 {
+	#if android
+	public var storageType:String = "EXTERNAL_DATA";
+	#end
 	public function new()
 	{
 		display = updateDisplay();
