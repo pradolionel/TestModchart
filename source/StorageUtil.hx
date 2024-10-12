@@ -8,6 +8,16 @@ import lime.system.System as LimeSystem;
 import haxe.io.Path;
 import haxe.Exception;
 
+using StringTools;
+
+enum StorageType
+{
+	DATA;
+	EXTERNAL;
+	EXTERNAL_DATA;
+	MEDIA;
+}
+
 /**
  * A storage class for mobile.
  * @author Mihai Alexandru (M.A. Jigsaw), Karim Akra and Lily Ross (mcagabe19)
@@ -18,7 +28,7 @@ class StorageUtil
 	// root directory, used for handling the saved storage type and path
 	public static final rootDir:String = LimeSystem.applicationStorageDirectory;
 
-	public static function getStorageDirectory(?force:Bool = false):String
+	public static function getStorageDirectory(type:StorageType = DATA):String
 	{
 		var daPath:String = '';
 		#if android
@@ -101,7 +111,7 @@ class StorageUtil
 	#if android
 	public static function requestPermissions():Void
 	{
-		if (!Permissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE') || !Permissions.getGrantedPermissions().contains('android.permission.WRITE_EXTERNAL_STORAGE'))
+		if (!AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE') || !AndroidPermissions.getGrantedPermissions().contains('android.permission.WRITE_EXTERNAL_STORAGE'))
 		{
 			Permissions.requestPermissions(['READ_EXTERNAL_STORAGE', 'WRITE_EXTERNAL_STORAGE']);
 			CoolUtil.showPopUp('Permissions', "if you acceptd the permissions all good if not expect a crash" + '\n' + 'Press Ok to see what happens');
