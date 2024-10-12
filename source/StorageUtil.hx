@@ -1,4 +1,4 @@
-package mobile.backend;
+package;
 
 #if sys
 import sys.*;
