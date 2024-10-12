@@ -41,9 +41,6 @@ class OptionCatagory
 
 class Option
 {
-	#if android
-	public var storageType:String = "EXTERNAL_DATA";
-	#end
 	public function new()
 	{
 		display = updateDisplay();
@@ -73,7 +70,12 @@ class Option
 		return throw "stub!";
 	}
 }
-
+class StorageType extends Option
+{
+	#if android
+	public var storageType:String = "EXTERNAL_DATA";
+	#end
+}
 class DFJKOption extends Option
 {
 	private var controls:Controls;
