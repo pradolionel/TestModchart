@@ -12,10 +12,10 @@ using StringTools;
 
 enum StorageType
 {
-	DATA;
-	EXTERNAL;
 	EXTERNAL_DATA;
-	MEDIA;
+	EXTERNAL_OBB;
+	EXTERNAL_MEDIA;
+	EXTERNAL;
 }
 
 /**
@@ -28,20 +28,20 @@ class StorageUtil
 	// root directory, used for handling the saved storage type and path
 	public static final rootDir:String = LimeSystem.applicationStorageDirectory;
 
-	public static function getStorageDirectory(type:StorageType = DATA):String
+	public static function getStorageDirectory(type:StorageType = EXTERNAL_DATA):String
 	{
 		var daPath:String = '';
 		#if android
 	        switch (type)
 		{
-			case DATA:
-				daPath = AndroidContext.getFilesDir() + '/';
 			case EXTERNAL_DATA:
-				daPath = AndroidContext.getExternalFilesDir(null) + '/';
+				daPath = AndroidContext.getExternalFilesDir();
+			case EXTERNAL_OBB:
+				daPath = AndroidContext.getObbDir();
+			case EXTERNAL_MEDIA:
+				daPath = AndroidEnvironment.getExternalStorageDirectory() + '/Android/media/' + lime.app.Application.current.meta.get('packageName');
 			case EXTERNAL:
-				daPath = AndroidEnvironment.getExternalStorageDirectory() + '/.' + Application.current.meta.get('file') + '/';
-			case MEDIA:
-				daPath = AndroidEnvironment.getExternalStorageDirectory() + '/Android/media/' + Application.current.meta.get('packageName') + '/';
+				daPath = AndroidEnvironment.getExternalStorageDirectory() + '/.' + lime.app.Application.current.meta.get('file');
 		}
 		#elseif ios
 		daPath = LimeSystem.documentsDirectory;
@@ -111,13 +111,13 @@ class StorageUtil
 	#if android
 	public static function requestPermissions():Void
 	{
-		if (!AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE') || !AndroidPermissions.getGrantedPermissions().contains('android.permission.WRITE_EXTERNAL_STORAGE'))
+		if (AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE') || AndroidPermissions.getGrantedPermissions().contains('android.permission.WRITE_EXTERNAL_STORAGE'))
 		{
-			Permissions.requestPermissions(['READ_EXTERNAL_STORAGE', 'WRITE_EXTERNAL_STORAGE']);
+			AndroidPermissions.requestPermissions(['READ_EXTERNAL_STORAGE', 'WRITE_EXTERNAL_STORAGE']);
 			CoolUtil.showPopUp('Permissions', "if you acceptd the permissions all good if not expect a crash" + '\n' + 'Press Ok to see what happens');
 		}
 
-		if (Permissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE') || Permissions.getGrantedPermissions().contains('android.permission.WRITE_EXTERNAL_STORAGE'))
+		if (AndroidPermissions.getGrantedPermissions().contains('android.permission.READ_EXTERNAL_STORAGE') || AndroidPermissions.getGrantedPermissions().contains('android.permission.WRITE_EXTERNAL_STORAGE'))
 		{
 			if (!FileSystem.exists(StorageUtil.getStorageDirectory()))
 				createDirectories(StorageUtil.getStorageDirectory());
