@@ -8,6 +8,14 @@ import lime.system.System as LimeSystem;
 import haxe.io.Path;
 import haxe.Exception;
 
+@:structInit class SaveVariables {
+	#if android
+	public var storageType:String = "EXTERNAL_DATA";
+	#end
+}
+class ClientPrefs {
+	public static var data:SaveVariables = {};
+}
 /**
  * A storage class for mobile.
  * @author Mihai Alexandru (M.A. Jigsaw), Karim Akra and Lily Ross (mcagabe19)
@@ -23,7 +31,7 @@ class StorageUtil
 		var daPath:String = '';
 		#if android
 		if (!FileSystem.exists(rootDir + 'storagetype.txt'))
-			File.saveContent(rootDir + 'storagetype.txt', Options.StorageType.storageType);
+			File.saveContent(rootDir + 'storagetype.txt', ClientPrefs.data.storageType);
 		var curStorageType:String = File.getContent(rootDir + 'storagetype.txt');
 		daPath = force ? StorageType.fromStrForce(curStorageType) : StorageType.fromStr(curStorageType);
 		daPath = Path.addTrailingSlash(daPath);
