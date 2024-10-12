@@ -1,5 +1,9 @@
 package mobile.backend;
 
+#if sys
+import sys.*;
+import sys.io.*;
+#end
 import lime.system.System as LimeSystem;
 import haxe.io.Path;
 import haxe.Exception;
