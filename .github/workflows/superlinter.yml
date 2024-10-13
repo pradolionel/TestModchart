@@ -26,7 +26,7 @@ jobs:
           haxelib install flixel 4.11.0
           haxelib install flixel-tools
           haxelib install flixel-ui
-          haxelib install flixel-addons 2.12.1
+          haxelib install flixel-addons 2.11.0
           haxelib install newgrounds 1.3.0
           haxelib install hscript
           haxelib git faxe https://github.com/ashea-code/faxe
