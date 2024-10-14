@@ -165,7 +165,7 @@ enum abstract StorageType(String) from String to String
 {
 	final forcedPath = '/storage/emulated/0/';
 	final packageNameLocal = 'com.ninjamuffin99.funkin';
-	final fileLocal = 'PsychEngine';
+	final fileLocal = 'ProjectFNF';
 
 	var EXTERNAL_DATA = "EXTERNAL_DATA";
 	var EXTERNAL_OBB = "EXTERNAL_OBB";
